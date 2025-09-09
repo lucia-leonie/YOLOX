@@ -32,6 +32,7 @@ class Exp(BaseExp):
         # If your training process cost many memory, reduce this value.
         self.data_num_workers = 4
         self.input_size = (640, 640)  # (height, width)
+        self.num_channels = 3  # 3 for RGB/BGR, 1 for grayscale
         # Actual multiscale ranges: [640 - 5 * 32, 640 + 5 * 32].
         # To disable multiscale training, set the value to 0.
         self.multiscale_range = 5
@@ -52,7 +53,7 @@ class Exp(BaseExp):
         # prob of applying mixup aug
         self.mixup_prob = 1.0
         # prob of applying hsv aug
-        self.hsv_prob = 1.0
+        self.hsv_prob = 1.0 if self.num_channels == 3 else 0.0  # HSV not relevant for grayscale
         # prob of applying flip aug
         self.flip_prob = 0.5
         # rotation angle range, for example, if set to 2, the true range is (-2, 2)
@@ -119,7 +120,7 @@ class Exp(BaseExp):
 
         if getattr(self, "model", None) is None:
             in_channels = [256, 512, 1024]
-            backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, act=self.act)
+            backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, act=self.act, num_channels=self.num_channels)
             head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, act=self.act)
             self.model = YOLOX(backbone, head)
 

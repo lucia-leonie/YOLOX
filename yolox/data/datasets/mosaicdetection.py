@@ -191,13 +191,18 @@ class MosaicDetection(Dataset):
         cp_scale_ratio *= jit_factor
 
         if FLIP:
-            cp_img = cp_img[:, ::-1, :]
+            cp_img = cp_img[:, ::-1]
 
         origin_h, origin_w = cp_img.shape[:2]
         target_h, target_w = origin_img.shape[:2]
-        padded_img = np.zeros(
-            (max(origin_h, target_h), max(origin_w, target_w), 3), dtype=np.uint8
-        )
+        if len(img.shape) == 3:
+            padded_img = np.zeros(
+                (max(origin_h, target_h), max(origin_w, target_w), 3), dtype=np.uint8
+            )
+        else:
+            padded_img = np.zeros(
+                (max(origin_h, target_h), max(origin_w, target_w)), dtype=np.uint8
+            )
         padded_img[:origin_h, :origin_w] = cp_img
 
         x_offset, y_offset = 0, 0

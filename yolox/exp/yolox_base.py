@@ -46,6 +46,10 @@ class Exp(BaseExp):
         self.val_ann = "instances_val2017.json"
         # name of annotation file for testing
         self.test_ann = "instances_test2017.json"
+        # name of image folders for training, evaluation and testing
+        self.train_name = "train2017"
+        self.val_name = "val2017"
+        self.test_name = "test2017"
 
         # --------------- transform config ----------------- #
         # prob of applying mosaic aug
@@ -151,6 +155,8 @@ class Exp(BaseExp):
             ),
             cache=cache,
             cache_type=cache_type,
+            name=self.train_name,
+            num_channels=self.num_channels,
         )
 
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, cache_img: str = None):
@@ -305,9 +311,10 @@ class Exp(BaseExp):
         return COCODataset(
             data_dir=self.data_dir,
             json_file=self.val_ann if not testdev else self.test_ann,
-            name="val2017" if not testdev else "test2017",
+            name=self.val_name if not testdev else self.test_name,
             img_size=self.test_size,
             preproc=ValTransform(legacy=legacy),
+            num_channels=self.num_channels,
         )
 
     def get_eval_loader(self, batch_size, is_distributed, **kwargs):

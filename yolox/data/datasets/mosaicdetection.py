@@ -96,6 +96,8 @@ class MosaicDetection(Dataset):
                 img = cv2.resize(
                     img, (int(w0 * scale), int(h0 * scale)), interpolation=cv2.INTER_LINEAR
                 )
+                if img.ndim == 2:
+                    img = img[:, :, None]
                 # generate output mosaic image
                 (h, w, c) = img.shape[:3]
                 if i_mosaic == 0:

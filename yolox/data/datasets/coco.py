@@ -19,7 +19,6 @@ def remove_useless_info(coco):
     """
     if isinstance(coco, COCO):
         dataset = coco.dataset
-        dataset.pop("info", None)
         dataset.pop("licenses", None)
         for img in dataset["images"]:
             img.pop("license", None)
@@ -147,7 +146,7 @@ class COCODataset(CacheDataset):
 
         img_file = os.path.join(self.data_dir, self.name, file_name)
 
-        img = cv2.imread(img_file, cv2.IMREAD_COLOR_BGR if self.num_channels == 3 else cv2.IMREAD_GRAYSCALE)
+        img = cv2.imread(img_file, cv2.IMREAD_COLOR if self.num_channels == 3 else cv2.IMREAD_GRAYSCALE)
         assert img is not None, f"file named {img_file} not found"
 
         return img
